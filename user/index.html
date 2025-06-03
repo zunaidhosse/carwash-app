@@ -8,25 +8,36 @@
 </head>
 <body>
   <div class="container">
-    <h2>Enter Your User ID</h2>
-    <input type="text" id="userIdInput" placeholder="Your ID" />
+    <h2 id="langTitle">Enter Your Car Number</h2>
+    <input type="text" id="userIdInput" placeholder="Car Number" />
     <button onclick="loadUser()">View</button>
-    
+    <button onclick="toggleLang()" id="langToggle">🌐 العربية</button>
+
     <div id="userData" class="hidden">
       <h3 id="userName"></h3>
       <div id="carsContainer" class="cars"></div>
+      <p id="lastWashDate"></p>
       <p id="messageArea"></p>
     </div>
   </div>
 
   <script>
+    let arabic = false;
+
+    function toggleLang() {
+      arabic = !arabic;
+      document.getElementById("langTitle").innerText = arabic ? "أدخل رقم السيارة" : "Enter Your Car Number";
+      document.getElementById("userIdInput").placeholder = arabic ? "رقم السيارة" : "Car Number";
+      document.getElementById("langToggle").innerText = arabic ? "🌐 English" : "🌐 العربية";
+    }
+
     function loadUser() {
       const id = document.getElementById("userIdInput").value.trim();
       const users = JSON.parse(localStorage.getItem("users") || "{}");
       if (users[id]) {
         const user = users[id];
         document.getElementById("userData").classList.remove("hidden");
-        document.getElementById("userName").innerText = `Welcome, ${user.name}`;
+        document.getElementById("userName").innerText = arabic ? `مرحبًا، ${user.name}` : `Welcome, ${user.name}`;
         const container = document.getElementById("carsContainer");
         container.innerHTML = "";
 
@@ -34,17 +45,16 @@
           const car = document.createElement("span");
           car.innerText = "🚗";
           car.style.opacity = i <= user.count ? "1" : "0.3";
+          car.style.fontSize = "4rem";
           container.appendChild(car);
         }
 
-        const message = document.getElementById("messageArea");
-        if (user.count === 5) {
-          message.innerText = "🎉 Congratulations! One Car Wash Free!";
-        } else {
-          message.innerText = "";
-        }
+        document.getElementById("lastWashDate").innerText =
+          (arabic ? "آخر غسيل: " : "Last Wash: ") + (user.lastWash || "N/A");
+        document.getElementById("messageArea").innerText = user.message || "";
+        document.getElementById("userIdInput").classList.add("hidden");
       } else {
-        alert("User not found!");
+        alert(arabic ? "رقم السيارة غير موجود!" : "Car not found!");
       }
     }
   </script>
