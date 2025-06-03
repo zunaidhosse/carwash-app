@@ -7,15 +7,23 @@ function saveUsers() {
 function createUser() {
   const id = document.getElementById("newUserId").value.trim();
   const name = document.getElementById("newUserName").value.trim();
-  if (id && name && !users[id]) {
-    users[id] = { name, count: 0, message: "" };
-    saveUsers();
-    renderUsers();
-    document.getElementById("newUserId").value = "";
-    document.getElementById("newUserName").value = "";
-  } else {
-    alert("Invalid or duplicate user ID");
+
+  if (!id || !name) {
+    alert("Please enter both User ID and User Name.");
+    return;
   }
+
+  if (users[id]) {
+    alert("User ID already exists!");
+    return;
+  }
+
+  users[id] = { name, count: 0 };
+  saveUsers();
+  renderUsers();
+
+  document.getElementById("newUserId").value = "";
+  document.getElementById("newUserName").value = "";
 }
 
 function incrementWash(id) {
@@ -37,13 +45,15 @@ function renderUsers() {
   const list = document.getElementById("usersList");
   const filter = document.getElementById("searchBox").value.toLowerCase();
   list.innerHTML = "";
+
   for (const id in users) {
     if (id.toLowerCase().includes(filter) || users[id].name.toLowerCase().includes(filter)) {
+      const user = users[id];
       const div = document.createElement("div");
       div.className = "user-card";
       div.innerHTML = `
-        <strong>${users[id].name}</strong> (ID: ${id})<br/>
-        Wash Count: ${users[id].count}<br/>
+        <strong>${user.name}</strong> (ID: ${id})<br/>
+        Wash Count: ${user.count}<br/>
         <div class="flex">
           <button onclick="incrementWash('${id}')">+1 Wash</button>
           <button onclick="deleteUser('${id}')">Delete</button>
