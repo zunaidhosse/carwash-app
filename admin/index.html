@@ -57,6 +57,11 @@
       border-radius: 16px;
       padding: 1rem;
       margin: 1rem 0;
+      transition: transform 0.3s ease;
+    }
+
+    .user-card.large {
+      transform: scale(2);
     }
 
     .flex {
@@ -71,7 +76,7 @@
       margin-bottom: 20px;
     }
 
-    #newUserId.hidden {
+    .hidden {
       display: none;
     }
   </style>
@@ -80,14 +85,14 @@
   <div class="container">
     <h2>🚗 Admin Panel</h2>
 
-    <div class="top-form">
-      <input type="text" id="newUserId" placeholder="Enter Your Car number" />
+    <div class="top-form" id="carInputSection">
+      <input type="text" id="newUserId" placeholder="Enter Your Car Number" />
       <input type="text" id="newUserName" placeholder="User Name" />
       <button onclick="createUser()">Create User</button>
     </div>
 
     <div class="search-box">
-      <input type="text" id="searchBox" placeholder="Search by Car number or Name" oninput="renderUsers()" />
+      <input type="text" id="searchBox" placeholder="Search by Car Number or Name" oninput="renderUsers()" />
     </div>
 
     <div id="usersList"></div>
