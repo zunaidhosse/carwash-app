@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -8,35 +8,59 @@
 </head>
 <body>
   <div class="container">
-    <h2>Enter Your Car Number</h2>
-    
+    <div class="lang-toggle">
+      <button onclick="toggleLanguage()">🌐 English / Arabic</button>
+    </div>
+
     <div id="inputSection">
+      <h2 id="titleText">Enter Your Car Number</h2>
       <input type="text" id="userIdInput" placeholder="Enter Your Car Number" />
       <button onclick="loadUser()">View</button>
     </div>
 
     <div id="userData" class="hidden">
       <h3 id="userName"></h3>
+      <p id="userMessage"></p>
+
+      <div id="progressBarWrapper">
+        <div id="progressBar"></div>
+      </div>
+
       <div id="carsContainer" class="cars"></div>
+
       <p id="messageArea"></p>
+
+      <button onclick="resetView()">🔄 Reset View</button>
+      <button onclick="showHistory()">🧾 View History</button>
+    </div>
+  </div>
+
+  <!-- History Modal -->
+  <div id="historyModal" class="modal hidden">
+    <div class="modal-content">
+      <h3>🧾 Wash History</h3>
+      <ul id="historyList"></ul>
+      <button onclick="closeHistory()">Close</button>
     </div>
   </div>
 
   <script>
+    let currentUserId = null;
+    let currentLang = 'en';
+
     function loadUser() {
       const id = document.getElementById("userIdInput").value.trim();
       const users = JSON.parse(localStorage.getItem("users") || "{}");
 
       if (users[id]) {
         const user = users[id];
+        currentUserId = id;
 
-        // Hide input section
         document.getElementById("inputSection").style.display = "none";
-
-        // Show user info
         document.getElementById("userData").classList.remove("hidden");
-        document.getElementById("userName").innerText = `Welcome, ${user.name}`;
-        
+        document.getElementById("userName").innerText = getText("Welcome, ") + user.name;
+        document.getElementById("userMessage").innerText = user.message || "";
+
         const container = document.getElementById("carsContainer");
         container.innerHTML = "";
 
@@ -47,19 +71,86 @@
           container.appendChild(car);
         }
 
-        // Make cars 2x larger
         container.classList.add("large");
 
-        const message = document.getElementById("messageArea");
+        const percent = (user.count / 5) * 100;
+        document.getElementById("progressBar").style.width = percent + "%";
+
         if (user.count === 5) {
-          message.innerText = "🎉 Congratulations! One Car Wash Free!";
+          document.getElementById("messageArea").innerText = getText("🎉 Congratulations! One Car Wash Free!");
         } else {
-          message.innerText = "";
+          document.getElementById("messageArea").innerText = "";
         }
 
       } else {
-        alert("User not found!");
+        alert(getText("User not found!"));
       }
+    }
+
+    function resetView() {
+      currentUserId = null;
+      document.getElementById("inputSection").style.display = "block";
+      document.getElementById("userData").classList.add("hidden");
+      document.getElementById("userIdInput").value = "";
+    }
+
+    function showHistory() {
+      const users = JSON.parse(localStorage.getItem("users") || "{}");
+      const user = users[currentUserId];
+
+      const historyList = document.getElementById("historyList");
+      historyList.innerHTML = "";
+
+      if (user.history && user.history.length > 0) {
+        user.history.forEach(entry => {
+          const li = document.createElement("li");
+          li.textContent = entry;
+          historyList.appendChild(li);
+        });
+      } else {
+        const li = document.createElement("li");
+        li.textContent = getText("No history available.");
+        historyList.appendChild(li);
+      }
+
+      document.getElementById("historyModal").classList.remove("hidden");
+    }
+
+    function closeHistory() {
+      document.getElementById("historyModal").classList.add("hidden");
+    }
+
+    function toggleLanguage() {
+      currentLang = currentLang === 'en' ? 'ar' : 'en';
+      applyLanguage();
+    }
+
+    function applyLanguage() {
+      if (currentLang === 'ar') {
+        document.documentElement.lang = "ar";
+        document.documentElement.dir = "rtl";
+        document.getElementById("titleText").innerText = "أدخل رقم سيارتك";
+        document.getElementById("userIdInput").placeholder = "أدخل رقم سيارتك";
+        document.getElementById("messageArea").style.textAlign = "right";
+      } else {
+        document.documentElement.lang = "en";
+        document.documentElement.dir = "ltr";
+        document.getElementById("titleText").innerText = "Enter Your Car Number";
+        document.getElementById("userIdInput").placeholder = "Enter Your Car Number";
+        document.getElementById("messageArea").style.textAlign = "center";
+      }
+    }
+
+    function getText(enText) {
+      const translations = {
+        "Enter Your Car Number": "أدخل رقم سيارتك",
+        "User not found!": "المستخدم غير موجود!",
+        "🎉 Congratulations! One Car Wash Free!": "🎉 مبروك! غسيل مجاني!",
+        "Welcome, ": "أهلاً، ",
+        "No history available.": "لا يوجد سجل متاح"
+      };
+
+      return currentLang === 'ar' ? translations[enText] || enText : enText;
     }
   </script>
 </body>
