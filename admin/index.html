@@ -70,6 +70,10 @@
       text-align: center;
       margin-bottom: 20px;
     }
+
+    #newUserId.hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -77,19 +81,18 @@
     <h2>🚗 Admin Panel</h2>
 
     <div class="top-form">
-      <input type="text" id="newUserId" placeholder="User ID" />
+      <input type="text" id="newUserId" placeholder="Enter Your Car number" />
       <input type="text" id="newUserName" placeholder="User Name" />
       <button onclick="createUser()">Create User</button>
     </div>
 
     <div class="search-box">
-      <input type="text" id="searchBox" placeholder="Search by ID or Name" oninput="renderUsers()" />
+      <input type="text" id="searchBox" placeholder="Search by Car number or Name" oninput="renderUsers()" />
     </div>
 
     <div id="usersList"></div>
   </div>
 
-  <!-- Correct JS file -->
   <script src="admin.js"></script>
 </body>
 </html>
