@@ -11,12 +11,10 @@
       padding: 2rem;
       color: #333;
     }
-
     h2 {
       text-align: center;
       margin-bottom: 2rem;
     }
-
     input, button, select {
       padding: 10px 15px;
       border: none;
@@ -27,16 +25,13 @@
       font-size: 16px;
       outline: none;
     }
-
     button {
       cursor: pointer;
       transition: 0.2s ease;
     }
-
     button:hover {
       background: #d2d2d2;
     }
-
     .container {
       max-width: 700px;
       margin: auto;
@@ -45,12 +40,10 @@
       padding: 20px;
       box-shadow: 10px 10px 20px #bebebe, -10px -10px 20px #ffffff;
     }
-
     .search-box {
       text-align: center;
       margin-bottom: 1rem;
     }
-
     .user-card {
       background: #e0e0e0;
       box-shadow: 5px 5px 10px #bebebe, -5px -5px 10px #ffffff;
@@ -58,42 +51,18 @@
       padding: 1rem;
       margin: 1rem 0;
     }
-
     .flex {
       display: flex;
       justify-content: center;
       gap: 10px;
       flex-wrap: wrap;
     }
-
     .top-form {
       text-align: center;
       margin-bottom: 20px;
     }
-
-    .leaderboard, .top-car {
+    .leaderboard {
       margin-top: 2rem;
-      padding: 1rem;
-      background: #fff;
-      border-radius: 16px;
-      box-shadow: 3px 3px 6px #bebebe, -3px -3px 6px #ffffff;
-    }
-
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background-color: rgba(0,0,0,0.6);
-      justify-content: center;
-      align-items: center;
-    }
-
-    .modal-content {
-      background: #fff;
-      padding: 1rem;
-      border-radius: 12px;
-      max-height: 80vh;
-      overflow-y: auto;
     }
   </style>
 </head>
@@ -104,11 +73,11 @@
     <div class="top-form">
       <input type="text" id="newUserId" placeholder="User ID" />
       <input type="text" id="newUserName" placeholder="User Name" />
-      <select id="vehicleType">
-        <option value="🚗">🚗 Car</option>
-        <option value="🚙">🚙 SUV</option>
-        <option value="🛻">🛻 Pickup</option>
-        <option value="🚚">🚚 Truck</option>
+      <select id="newUserCar">
+        <option value="🚗">🚗</option>
+        <option value="🚙">🚙</option>
+        <option value="🛻">🛻</option>
+        <option value="🚚">🚚</option>
       </select>
       <button onclick="createUser()">Create User</button>
     </div>
@@ -118,17 +87,9 @@
     </div>
 
     <div id="usersList"></div>
-
-    <div class="top-car" id="topCar"></div>
-    <div class="leaderboard" id="leaderboard"></div>
-  </div>
-
-  <!-- History Modal -->
-  <div class="modal" id="historyModal">
-    <div class="modal-content" id="historyContent">
-      <button onclick="closeHistory()">Close</button>
-      <h3>🧾 Wash History</h3>
-      <ul id="historyList"></ul>
+    <div class="leaderboard">
+      <h3>🏆 Top Cars</h3>
+      <div id="topCars"></div>
     </div>
   </div>
 
