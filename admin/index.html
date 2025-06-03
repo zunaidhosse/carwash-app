@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Admin Panel</title>
   <style>
     body {
@@ -17,7 +17,7 @@
       margin-bottom: 2rem;
     }
 
-    input, button, textarea {
+    input, button, select {
       padding: 10px 15px;
       border: none;
       border-radius: 12px;
@@ -26,13 +26,6 @@
       margin: 5px;
       font-size: 16px;
       outline: none;
-      font-family: 'Segoe UI', sans-serif;
-    }
-
-    textarea {
-      width: 100%;
-      resize: vertical;
-      min-height: 50px;
     }
 
     button {
@@ -45,7 +38,7 @@
     }
 
     .container {
-      max-width: 600px;
+      max-width: 800px;
       margin: auto;
       background: #e0e0e0;
       border-radius: 20px;
@@ -71,7 +64,6 @@
       justify-content: center;
       gap: 10px;
       flex-wrap: wrap;
-      margin-top: 10px;
     }
 
     .top-form {
@@ -79,122 +71,100 @@
       margin-bottom: 20px;
     }
 
-    /* Progress bar */
-    .progress-container {
-      width: 100%;
-      background: #ccc;
-      border-radius: 10px;
-      height: 15px;
-      margin-top: 5px;
-      box-shadow: inset 3px 3px 5px #bebebe, inset -3px -3px 5px #ffffff;
-    }
-
     .progress-bar {
-      height: 100%;
-      background: #2f80ed;
-      border-radius: 10px;
-      transition: width 0.3s ease;
-    }
-
-    /* Modal styles */
-    #historyModal {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.5);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-    }
-
-    #historyModal.active {
-      display: flex;
-    }
-
-    #historyModal .modal-content {
-      background: #e0e0e0;
-      padding: 20px;
-      border-radius: 15px;
-      max-width: 400px;
-      width: 90%;
-      box-shadow: 10px 10px 20px #bebebe, -10px -10px 20px #ffffff;
-      color: #333;
-    }
-
-    #historyModal h3 {
-      margin-top: 0;
-      text-align: center;
-    }
-
-    #historyModal ul {
-      list-style: none;
-      max-height: 200px;
-      overflow-y: auto;
-      padding-left: 0;
-    }
-
-    #historyModal ul li {
-      padding: 5px 0;
-      border-bottom: 1px solid #ccc;
-    }
-
-    #historyModal button.close-btn {
-      margin-top: 15px;
       width: 100%;
-      background: #d9534f;
-      color: white;
+      background-color: #ccc;
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 10px 0;
+    }
+
+    .progress-bar-fill {
+      height: 20px;
+      background-color: #4caf50;
+      width: 0%;
+      transition: width 0.3s;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 10% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      border-radius: 10px;
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
       font-weight: bold;
     }
 
-    /* Leaderboard */
-    #leaderboard {
-      margin-top: 30px;
-      background: #e0e0e0;
-      border-radius: 16px;
-      padding: 1rem;
-      box-shadow: inset 3px 3px 6px #bebebe, inset -3px -3px 6px #ffffff;
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
     }
 
-    #leaderboard h3 {
-      margin-top: 0;
+    .leaderboard {
+      margin-top: 20px;
+    }
+
+    .leaderboard h3 {
       text-align: center;
     }
 
-    #leaderboard ul {
+    .leaderboard ul {
       list-style: none;
-      padding-left: 0;
+      padding: 0;
     }
 
-    #leaderboard ul li {
-      padding: 5px 0;
-      border-bottom: 1px solid #ccc;
-      font-weight: bold;
+    .leaderboard li {
+      background: #e0e0e0;
+      box-shadow: 3px 3px 6px #bebebe, -3px -3px 6px #ffffff;
+      border-radius: 10px;
+      padding: 10px;
+      margin: 5px 0;
+    }
+
+    .language-toggle {
       text-align: center;
-    }
-
-    /* Language toggle button */
-    #toggleLangBtn {
-      margin: 0 auto 20px auto;
-      display: block;
-      font-size: 18px;
-      padding: 8px 20px;
-      background: #2f80ed;
-      color: white;
-      border-radius: 12px;
-      box-shadow: 5px 5px 10px #1a5ecc, -5px -5px 10px #5a9aff;
+      margin-bottom: 20px;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>🚗 <span data-en="Admin Panel" data-ar="لوحة الإدارة">Admin Panel</span></h2>
+    <h2>🚗 Admin Panel</h2>
 
-    <button id="toggleLangBtn">🌐 Arabic</button>
+    <div class="language-toggle">
+      <label for="languageSelect">🌐 Language:</label>
+      <select id="languageSelect" onchange="toggleLanguage()">
+        <option value="en">English</option>
+        <option value="ar">العربية</option>
+      </select>
+    </div>
 
     <div class="top-form">
       <input type="text" id="newUserId" placeholder="User ID" />
       <input type="text" id="newUserName" placeholder="User Name" />
-      <button onclick="createUser()"><span data-en="Create User" data-ar="إنشاء مستخدم">Create User</span></button>
+      <input type="text" id="newUserMessage" placeholder="User Message" />
+      <button onclick="createUser()">Create User</button>
     </div>
 
     <div class="search-box">
@@ -203,18 +173,18 @@
 
     <div id="usersList"></div>
 
-    <div id="leaderboard">
-      <h3><span data-en="Leaderboard (Top Users)" data-ar="قائمة المتصدرين (أفضل المستخدمين)">Leaderboard (Top Users)</span></h3>
+    <div class="leaderboard">
+      <h3>🏆 Leaderboard (Top Users)</h3>
       <ul id="leaderboardList"></ul>
     </div>
   </div>
 
-  <!-- History Modal -->
-  <div id="historyModal">
-    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="historyTitle">
-      <h3 id="historyTitle"><span data-en="Wash History" data-ar="سجل الغسيل">Wash History</span></h3>
+  <!-- Wash History Modal -->
+  <div id="historyModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeHistoryModal()">&times;</span>
+      <h3>🧾 Wash History</h3>
       <ul id="historyList"></ul>
-      <button class="close-btn" onclick="closeHistoryModal()"><span data-en="Close" data-ar="إغلاق">Close</span></button>
     </div>
   </div>
 
