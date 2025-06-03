@@ -5,37 +5,46 @@ function saveUsers() {
 }
 
 function createUser() {
-  const idField = document.getElementById("newUserId");
-  const nameField = document.getElementById("newUserName");
-  const id = idField.value.trim();
-  const name = nameField.value.trim();
-
-  if (!id || !name) {
-    alert("Please enter both Car Number and User Name.");
-    return;
+  const id = document.getElementById("newUserId").value.trim();
+  const name = document.getElementById("newUserName").value.trim();
+  if (id && name && !users[id]) {
+    users[id] = { name, count: 0, message: "", lastWash: "" };
+    saveUsers();
+    renderUsers();
+    document.getElementById("newUserId").value = "";
+    document.getElementById("newUserName").value = "";
+  } else {
+    alert("Invalid or duplicate Car Number");
   }
-
-  if (users[id]) {
-    alert("Car number already exists!");
-    return;
-  }
-
-  users[id] = { name, count: 0 };
-  saveUsers();
-  renderUsers();
-
-  idField.value = "";
-  nameField.value = "";
-
-  // Hide input section
-  document.getElementById("carInputSection").classList.add("hidden");
 }
 
 function incrementWash(id) {
   users[id].count += 1;
   if (users[id].count > 5) users[id].count = 1;
+  users[id].lastWash = new Date().toLocaleDateString();
   saveUsers();
   renderUsers();
+}
+
+function sendMessage(id) {
+  const msg = prompt("Enter message for this user:");
+  if (msg !== null) {
+    users[id].message = msg;
+    saveUsers();
+    renderUsers();
+  }
+}
+
+function broadcastMessage() {
+  const msg = document.getElementById("broadcastMsg").value.trim();
+  if (msg) {
+    for (const id in users) {
+      users[id].message = msg;
+    }
+    saveUsers();
+    renderUsers();
+    document.getElementById("broadcastMsg").value = "";
+  }
 }
 
 function deleteUser(id) {
@@ -50,33 +59,23 @@ function renderUsers() {
   const list = document.getElementById("usersList");
   const filter = document.getElementById("searchBox").value.toLowerCase();
   list.innerHTML = "";
-
   for (const id in users) {
-    const user = users[id];
-    const match = id.toLowerCase().includes(filter) || user.name.toLowerCase().includes(filter);
-    if (match || filter === "") {
+    if (id.toLowerCase().includes(filter) || users[id].name.toLowerCase().includes(filter)) {
       const div = document.createElement("div");
       div.className = "user-card";
       div.innerHTML = `
-        <strong>${user.name}</strong> (Car: ${id})<br/>
-        Wash Count: ${user.count}<br/>
+        <strong>${users[id].name}</strong> (Car: ${id})<br/>
+        Wash Count: ${users[id].count}<br/>
+        Last Wash: ${users[id].lastWash || "N/A"}<br/>
         <div class="flex">
           <button onclick="incrementWash('${id}')">+1 Wash</button>
+          <button onclick="sendMessage('${id}')">Send Msg</button>
           <button onclick="deleteUser('${id}')">Delete</button>
         </div>
       `;
-
-      // If searched ID matches exact Car number, make card bigger
-      if (filter === id.toLowerCase()) {
-        div.classList.add("large");
-      }
-
       list.appendChild(div);
     }
   }
 }
 
-window.onload = () => {
-  document.getElementById("carInputSection").classList.remove("hidden");
-  renderUsers();
-};
+renderUsers();
