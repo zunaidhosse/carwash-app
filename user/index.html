@@ -7,9 +7,10 @@
   <link rel="stylesheet" href="style.css" />
   <style>
     .emoji-header {
-      font-size: 4rem;
+      font-size: 3.5rem;
       text-align: center;
       margin-bottom: 1rem;
+      line-height: 1.5;
     }
 
     .progress-bar-container {
@@ -32,6 +33,17 @@
       line-height: 25px;
       border-radius: 20px;
     }
+
+    .reset-btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 10px;
+      background: #e74c3c;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
   </style>
 </head>
 <body>
@@ -51,7 +63,7 @@
         <div id="progressBar" class="progress-bar-fill">0%</div>
       </div>
       <p id="messageArea"></p>
-      <button onclick="resetView()">🔄 Reset View</button>
+      <button class="reset-btn" onclick="resetView()">🔄 Reset View</button>
     </div>
   </div>
 
@@ -63,22 +75,30 @@
       if (users[id]) {
         const user = users[id];
 
-        // Hide input section
         document.getElementById("inputSection").style.display = "none";
         document.getElementById("userData").classList.remove("hidden");
 
         document.getElementById("userName").innerText = `Welcome, ${user.name}`;
 
         const carEmoji = user.car || "🚗";
-        document.getElementById("carEmojiHeader").innerText = carEmoji;
+        const carCount = user.count || 0;
 
-        const percentage = Math.min((user.count / 5) * 100, 100);
+        // Display car emojis equal to count
+        const emojiArea = document.getElementById("carEmojiHeader");
+        emojiArea.innerHTML = "";
+        for (let i = 0; i < carCount; i++) {
+          emojiArea.innerHTML += carEmoji + " ";
+        }
+        if (carCount === 0) emojiArea.innerHTML = carEmoji;
+
+        // Progress bar
+        const percentage = Math.min((carCount / 5) * 100, 100);
         const progressBar = document.getElementById("progressBar");
         progressBar.style.width = `${percentage}%`;
         progressBar.innerText = `${Math.round(percentage)}%`;
 
         const message = document.getElementById("messageArea");
-        if (user.count === 5) {
+        if (carCount === 5) {
           message.innerText = "🎉 Congratulations! One Car Wash Free!";
         } else {
           message.innerText = "";
@@ -93,6 +113,7 @@
       document.getElementById("userIdInput").value = "";
       document.getElementById("inputSection").style.display = "block";
       document.getElementById("userData").classList.add("hidden");
+      document.getElementById("carEmojiHeader").innerHTML = "🚗";
     }
   </script>
 </body>
