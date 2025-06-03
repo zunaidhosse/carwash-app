@@ -29,16 +29,6 @@
       <p id="messageArea"></p>
       <p id="userMessage" class="user-msg"></p>
       <button onclick="resetView()" id="resetBtn">🔄 Reset View</button>
-      <button onclick="showHistory()" id="historyBtn">🧾 Show Wash History</button>
-    </div>
-  </div>
-
-  <!-- Modal for wash history -->
-  <div id="historyModal" class="modal hidden">
-    <div class="modal-content">
-      <span class="close" onclick="closeModal()">&times;</span>
-      <h3>🧾 Wash History</h3>
-      <ul id="historyList"></ul>
     </div>
   </div>
 
@@ -50,7 +40,6 @@
         title: "Enter Your Car Number",
         view: "View",
         reset: "🔄 Reset View",
-        history: "🧾 Show Wash History",
         congrats: "🎉 Congratulations! One Car Wash Free!",
         notFound: "User not found!"
       },
@@ -58,7 +47,6 @@
         title: "أدخل رقم سيارتك",
         view: "عرض",
         reset: "🔄 إعادة",
-        history: "🧾 عرض سجل الغسيل",
         congrats: "🎉 تهانينا! غسيل مجاني!",
         notFound: "المستخدم غير موجود!"
       }
@@ -70,14 +58,12 @@
       document.getElementById("enterTitle").innerText = t.title;
       document.getElementById("viewBtn").innerText = t.view;
       document.getElementById("resetBtn").innerText = t.reset;
-      document.getElementById("historyBtn").innerText = t.history;
       document.body.dir = lang === 'ar' ? 'rtl' : 'ltr';
     }
 
     function loadUser() {
       const id = document.getElementById("userIdInput").value.trim();
       const users = JSON.parse(localStorage.getItem("users") || "{}");
-      const history = JSON.parse(localStorage.getItem("history") || "{}");
 
       if (users[id]) {
         const user = users[id];
@@ -104,11 +90,8 @@
         const message = document.getElementById("messageArea");
         message.innerText = user.count === 5 ? translations[currentLang].congrats : "";
 
-        // Display user message (feedback)
+        // Display user message
         document.getElementById("userMessage").innerText = user.message || "";
-
-        // Save current user ID for history
-        localStorage.setItem("currentUser", id);
       } else {
         alert(translations[currentLang].notFound);
       }
@@ -120,32 +103,7 @@
       document.getElementById("userData").classList.add("hidden");
     }
 
-    function showHistory() {
-      const id = localStorage.getItem("currentUser");
-      const history = JSON.parse(localStorage.getItem("history") || "{}");
-      const list = document.getElementById("historyList");
-      list.innerHTML = "";
-
-      if (history[id] && history[id].length > 0) {
-        history[id].forEach(date => {
-          const li = document.createElement("li");
-          li.textContent = new Date(date).toLocaleString();
-          list.appendChild(li);
-        });
-      } else {
-        const li = document.createElement("li");
-        li.textContent = "No history available.";
-        list.appendChild(li);
-      }
-
-      document.getElementById("historyModal").classList.remove("hidden");
-    }
-
-    function closeModal() {
-      document.getElementById("historyModal").classList.add("hidden");
-    }
-
-    // Initialize default language
+    // Initialize language
     setLanguage('en');
   </script>
 </body>
