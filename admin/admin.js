@@ -1,5 +1,3 @@
-// admin/admin.js
-
 let users = JSON.parse(localStorage.getItem("users") || "{}"); let washHistory = JSON.parse(localStorage.getItem("washHistory") || "[]");
 
 function saveUsers() { localStorage.setItem("users", JSON.stringify(users)); }
