@@ -1,16 +1,4 @@
-const password = "Zun64725800";
 let users = JSON.parse(localStorage.getItem("users") || "{}");
-
-function checkPassword() {
-  const input = document.getElementById("adminPass").value;
-  if (input === password) {
-    document.getElementById("login-section").classList.add("hidden");
-    document.getElementById("admin-section").classList.remove("hidden");
-    renderUsers();
-  } else {
-    alert("Incorrect password");
-  }
-}
 
 function saveUsers() {
   localStorage.setItem("users", JSON.stringify(users));
@@ -51,6 +39,17 @@ function renderUsers() {
       div.className = "user-card";
       div.innerHTML = `
         <strong>${users[id].name}</strong> (ID: ${id})<br/>
+        Wash Count: ${users[id].count}<br/>
+        <button onclick="incrementWash('${id}')">+1 Wash</button>
+        <button onclick="deleteUser('${id}')">Delete</button>
+      `;
+      list.appendChild(div);
+    }
+  }
+}
+
+// পেজ লোড হলে ইউজার দেখাও
+window.onload = renderUsers;${users[id].name}</strong> (ID: ${id})<br/>
         Wash Count: ${users[id].count}<br/>
         <button onclick="incrementWash('${id}')">+1 Wash</button>
         <button onclick="deleteUser('${id}')">Delete</button>
