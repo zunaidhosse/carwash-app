@@ -11,7 +11,7 @@ function createUser() {
   const name = nameField.value.trim();
 
   if (!id || !name) {
-    alert("Please enter both Car number and User Name.");
+    alert("Please enter both Car Number and User Name.");
     return;
   }
 
@@ -24,12 +24,11 @@ function createUser() {
   saveUsers();
   renderUsers();
 
-  // Clear fields
   idField.value = "";
   nameField.value = "";
 
-  // Hide Car number input after submission
-  idField.classList.add("hidden");
+  // Hide input section
+  document.getElementById("carInputSection").classList.add("hidden");
 }
 
 function incrementWash(id) {
@@ -53,8 +52,9 @@ function renderUsers() {
   list.innerHTML = "";
 
   for (const id in users) {
-    if (id.toLowerCase().includes(filter) || users[id].name.toLowerCase().includes(filter)) {
-      const user = users[id];
+    const user = users[id];
+    const match = id.toLowerCase().includes(filter) || user.name.toLowerCase().includes(filter);
+    if (match || filter === "") {
       const div = document.createElement("div");
       div.className = "user-card";
       div.innerHTML = `
@@ -65,13 +65,18 @@ function renderUsers() {
           <button onclick="deleteUser('${id}')">Delete</button>
         </div>
       `;
+
+      // If searched ID matches exact Car number, make card bigger
+      if (filter === id.toLowerCase()) {
+        div.classList.add("large");
+      }
+
       list.appendChild(div);
     }
   }
 }
 
-// Show Car number field on refresh
 window.onload = () => {
-  document.getElementById("newUserId").classList.remove("hidden");
+  document.getElementById("carInputSection").classList.remove("hidden");
   renderUsers();
 };
