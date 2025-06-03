@@ -38,13 +38,12 @@ button {
 }
 .hidden {
   display: none;
-}x;
 }
-
-.congrats {
+.message {
+  margin-top: 1rem;
+  color: blue;
   font-weight: bold;
-  color: green;
-  font-size: 18px;
+}8px;
 }
 
 .message {

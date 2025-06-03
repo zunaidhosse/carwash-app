@@ -11,11 +11,11 @@
     <h2>Enter Your User ID</h2>
     <input type="text" id="userIdInput" placeholder="Your ID" />
     <button onclick="loadUser()">View</button>
-    
+
     <div id="userData" class="hidden">
       <h3 id="userName"></h3>
       <div id="carsContainer" class="cars"></div>
-      <p id="messageArea"></p>
+      <p id="messageArea" class="message"></p>
     </div>
   </div>
 
@@ -41,7 +41,7 @@
         if (user.count === 5) {
           message.innerText = "🎉 Congratulations! One Car Wash Free!";
         } else {
-          message.innerText = "";
+          message.innerText = user.message || "";
         }
       } else {
         alert("User not found!");

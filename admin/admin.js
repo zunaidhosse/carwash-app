@@ -7,12 +7,26 @@ function saveUsers() {
 function createUser() {
   const id = document.getElementById("newUserId").value.trim();
   const name = document.getElementById("newUserName").value.trim();
-  if (id && name && !users[id]) {
-    users[id] = { name, count: 0, message: "" };
+  if (!id || !name) return alert("Enter ID and Name");
+
+  if (users[id]) {
+    alert("User ID already exists!");
+    return;
+  }
+
+  users[id] = { name: name, count: 0, message: "" };
+  saveUsers();
+  renderUsers();
+
+  document.getElementById("newUserId").value = "";
+  document.getElementById("newUserName").value = "";
+}
+
+function deleteUser(id) {
+  if (confirm("Delete user?")) {
+    delete users[id];
     saveUsers();
     renderUsers();
-    document.getElementById("newUserId").value = "";
-    document.getElementById("newUserName").value = "";
   }
 }
 
@@ -23,24 +37,42 @@ function incrementWash(id) {
   renderUsers();
 }
 
-function deleteUser(id) {
-  delete users[id];
+function sendToOne(id) {
+  const msg = prompt("Enter message for this user:");
+  if (msg !== null) {
+    users[id].message = msg;
+    saveUsers();
+  }
+}
+
+function sendToAll() {
+  const msg = document.getElementById("broadcastMsg").value;
+  if (!msg) return;
+
+  for (let id in users) {
+    users[id].message = msg;
+  }
+
+  document.getElementById("broadcastMsg").value = "";
   saveUsers();
-  renderUsers();
+  alert("Message sent to all users.");
 }
 
 function renderUsers() {
   const list = document.getElementById("usersList");
   const filter = document.getElementById("searchBox").value.toLowerCase();
   list.innerHTML = "";
+
   for (const id in users) {
-    if (id.toLowerCase().includes(filter) || users[id].name.toLowerCase().includes(filter)) {
+    const user = users[id];
+    if (id.toLowerCase().includes(filter) || user.name.toLowerCase().includes(filter)) {
       const div = document.createElement("div");
       div.className = "user-card";
       div.innerHTML = `
-        <strong>${users[id].name}</strong> (ID: ${id})<br/>
-        Wash Count: ${users[id].count}<br/>
+        <strong>${user.name}</strong> (ID: ${id})<br>
+        Wash Count: ${user.count}<br>
         <button onclick="incrementWash('${id}')">+1 Wash</button>
+        <button onclick="sendToOne('${id}')">Send Message</button>
         <button onclick="deleteUser('${id}')">Delete</button>
       `;
       list.appendChild(div);
@@ -48,28 +80,7 @@ function renderUsers() {
   }
 }
 
-// পেজ লোড হলে ইউজার দেখাও
-window.onload = renderUsers;${users[id].name}</strong> (ID: ${id})<br/>
-        Wash Count: ${users[id].count}<br/>
-        <button onclick="incrementWash('${id}')">+1 Wash</button>
-        <button onclick="deleteUser('${id}')">Delete</button>
-      `;
-      list.appendChild(div);
-    }
-  }
-}t");
-  list.innerHTML = "";
-  for (const id in users) {
-    if (id.toLowerCase().includes(filter) || users[id].name.toLowerCase().includes(filter)) {
-      renderUser(id, users[id]);
-    }
-  }
-}
-
-function renderUser(id, user) {
-  const div = document.createElement("div");
-  div.className = "user-box";
-  div.innerHTML = `
+window.onload = renderUsers;nerHTML = `
     <strong>${user.name}</strong> (${id})<br>
     Washes: ${user.washes} <button onclick="addWash('${id}')">+1</button>
     <button onclick="sendToOne('${id}')">Msg</button>
