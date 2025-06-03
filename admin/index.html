@@ -4,30 +4,92 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Admin Panel</title>
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #e0e0e0;
+      padding: 2rem;
+      color: #333;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    input, button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 12px;
+      background: #e0e0e0;
+      box-shadow: inset 5px 5px 10px #bebebe, inset -5px -5px 10px #ffffff;
+      margin: 5px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    button {
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    button:hover {
+      background: #d2d2d2;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #e0e0e0;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 10px 10px 20px #bebebe, -10px -10px 20px #ffffff;
+    }
+
+    .search-box {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .user-card {
+      background: #e0e0e0;
+      box-shadow: 5px 5px 10px #bebebe, -5px -5px 10px #ffffff;
+      border-radius: 16px;
+      padding: 1rem;
+      margin: 1rem 0;
+    }
+
+    .flex {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .top-form {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
     <h2>🚗 Admin Panel</h2>
 
     <div class="top-form">
-      <input type="text" id="newUserId" placeholder="Car Number" />
+      <input type="text" id="newUserId" placeholder="User ID" />
       <input type="text" id="newUserName" placeholder="User Name" />
       <button onclick="createUser()">Create User</button>
     </div>
 
-    <div class="broadcast-form">
-      <input type="text" id="broadcastMsg" placeholder="Broadcast Message" />
-      <button onclick="broadcastMessage()">Send to All</button>
-    </div>
-
     <div class="search-box">
-      <input type="text" id="searchBox" placeholder="Search by Car Number or Name" oninput="renderUsers()" />
+      <input type="text" id="searchBox" placeholder="Search by ID or Name" oninput="renderUsers()" />
     </div>
 
     <div id="usersList"></div>
   </div>
 
-  <script src="index.js"></script>
+  <!-- Correct JS file -->
+  <script src="admin.js"></script>
 </body>
 </html>
