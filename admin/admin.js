@@ -44,13 +44,15 @@ function renderUsers() {
       div.innerHTML = `
         <strong>${users[id].name}</strong> (ID: ${id})<br/>
         Wash Count: ${users[id].count}<br/>
-        <button onclick="incrementWash('${id}')">+1 Wash</button>
-        <button onclick="deleteUser('${id}')">Delete</button>
+        <div class="flex">
+          <button onclick="incrementWash('${id}')">+1 Wash</button>
+          <button onclick="deleteUser('${id}')">Delete</button>
+        </div>
       `;
       list.appendChild(div);
     }
   }
 }
 
-// Render on page load
+// Initial render
 renderUsers();
