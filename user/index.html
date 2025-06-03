@@ -5,9 +5,44 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>User View</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    .emoji-header {
+      font-size: 3rem;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .progress-bar-container {
+      background-color: #ccc;
+      border-radius: 20px;
+      height: 25px;
+      width: 100%;
+      margin: 1rem 0;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      background-color: #2f80ed;
+      height: 100%;
+      width: 0%;
+      transition: width 0.5s ease;
+      text-align: center;
+      color: white;
+      font-weight: bold;
+      line-height: 25px;
+      border-radius: 20px;
+    }
+
+    .emoji-user {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
+    <div class="emoji-header">🚙 🚗 🛻 🚚</div>
+
     <h2>Enter Your Car Number</h2>
     
     <div id="inputSection">
@@ -17,7 +52,10 @@
 
     <div id="userData" class="hidden">
       <h3 id="userName"></h3>
-      <div id="carsContainer" class="cars"></div>
+      <div id="carEmoji" class="emoji-user"></div>
+      <div class="progress-bar-container">
+        <div id="progressBar" class="progress-bar-fill">0%</div>
+      </div>
       <p id="messageArea"></p>
       <button onclick="resetView()">🔄 Reset View</button>
     </div>
@@ -33,25 +71,17 @@
 
         // Hide input section
         document.getElementById("inputSection").style.display = "none";
-
-        // Show user info
         document.getElementById("userData").classList.remove("hidden");
+
         document.getElementById("userName").innerText = `Welcome, ${user.name}`;
-        
-        const container = document.getElementById("carsContainer");
-        container.innerHTML = "";
 
-        const carEmoji = user.car || "🚗"; // Default car if not set
+        const carEmoji = user.car || "🚗";
+        document.getElementById("carEmoji").innerText = carEmoji;
 
-        for (let i = 1; i <= 5; i++) {
-          const car = document.createElement("span");
-          car.innerText = carEmoji;
-          car.style.opacity = i <= user.count ? "1" : "0.3";
-          container.appendChild(car);
-        }
-
-        // Make cars 2x larger
-        container.classList.add("large");
+        const percentage = Math.min((user.count / 5) * 100, 100);
+        const progressBar = document.getElementById("progressBar");
+        progressBar.style.width = `${percentage}%`;
+        progressBar.innerText = `${Math.round(percentage)}%`;
 
         const message = document.getElementById("messageArea");
         if (user.count === 5) {
