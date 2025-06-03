@@ -1,20 +1,25 @@
 body {
-  font-family: sans-serif;
+  font-family: 'Segoe UI', sans-serif;
   background: #ecf0f3;
   padding: 2rem;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
+  direction: ltr;
+  transition: all 0.3s ease;
 }
+
 .container {
   background: #ecf0f3;
   box-shadow: 8px 8px 15px #cbced1, -8px -8px 15px #fff;
   padding: 2rem;
   border-radius: 20px;
-  width: 320px;
+  width: 340px;
   text-align: center;
+  position: relative;
 }
+
 input {
   padding: 0.5rem;
   width: 100%;
@@ -22,7 +27,9 @@ input {
   border-radius: 10px;
   border: none;
   box-shadow: inset 3px 3px 6px #cbced1, inset -3px -3px 6px #fff;
+  font-size: 16px;
 }
+
 button {
   padding: 0.5rem 1rem;
   border: none;
@@ -31,14 +38,99 @@ button {
   color: white;
   font-weight: bold;
   cursor: pointer;
+  margin: 5px 0;
+  transition: 0.2s ease-in-out;
 }
+
+button:hover {
+  background: #2563eb;
+}
+
 .cars {
   font-size: 2rem;
   margin: 1rem 0;
 }
+
 .cars.large {
-  font-size: 4rem; /* 2x larger */
+  font-size: 4rem;
 }
+
 .hidden {
   display: none;
+}
+
+#messageArea, #userMessage {
+  font-size: 1rem;
+  margin-top: 10px;
+  color: #333;
+}
+
+/* 🔔 Progress Bar */
+#progressBarWrapper {
+  width: 100%;
+  background: #ddd;
+  border-radius: 20px;
+  margin: 1rem 0;
+  height: 12px;
+  overflow: hidden;
+}
+
+#progressBar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #2f80ed, #56ccf2);
+  border-radius: 20px;
+  transition: width 0.5s ease-in-out;
+}
+
+/* 🧾 History Modal */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 16px;
+  max-width: 300px;
+  width: 90%;
+  box-shadow: 8px 8px 20px #bbb, -8px -8px 20px #fff;
+  text-align: center;
+}
+
+.modal-content h3 {
+  margin-bottom: 10px;
+}
+
+.modal-content ul {
+  list-style: none;
+  padding-left: 0;
+  max-height: 200px;
+  overflow-y: auto;
+  text-align: left;
+}
+
+.modal-content button {
+  margin-top: 15px;
+  background-color: #ef4444;
+}
+
+/* 🌐 Language toggle */
+.lang-toggle {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.lang-toggle button {
+  background: #10b981;
 }
