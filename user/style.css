@@ -12,7 +12,7 @@ body {
   box-shadow: 8px 8px 15px #cbced1, -8px -8px 15px #fff;
   padding: 2rem;
   border-radius: 20px;
-  width: 340px;
+  width: 320px;
   text-align: center;
 }
 input {
@@ -25,7 +25,6 @@ input {
 }
 button {
   padding: 0.5rem 1rem;
-  margin: 5px;
   border: none;
   border-radius: 10px;
   background: #2f80ed;
@@ -37,19 +36,9 @@ button {
   font-size: 2rem;
   margin: 1rem 0;
 }
+.cars.large {
+  font-size: 4rem; /* 2x larger */
+}
 .hidden {
   display: none;
-}
-.user-card {
-  background: #ecf0f3;
-  box-shadow: 5px 5px 10px #cbced1, -5px -5px 10px #fff;
-  border-radius: 12px;
-  padding: 1rem;
-  margin: 1rem 0;
-}
-.flex {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  flex-wrap: wrap;
 }
