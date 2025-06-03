@@ -11,11 +11,13 @@
       padding: 2rem;
       color: #333;
     }
+
     h2 {
       text-align: center;
       margin-bottom: 2rem;
     }
-    input, button, select {
+
+    input, select, button {
       padding: 10px 15px;
       border: none;
       border-radius: 12px;
@@ -25,25 +27,30 @@
       font-size: 16px;
       outline: none;
     }
+
     button {
       cursor: pointer;
       transition: 0.2s ease;
     }
+
     button:hover {
       background: #d2d2d2;
     }
+
     .container {
-      max-width: 700px;
+      max-width: 600px;
       margin: auto;
       background: #e0e0e0;
       border-radius: 20px;
       padding: 20px;
       box-shadow: 10px 10px 20px #bebebe, -10px -10px 20px #ffffff;
     }
+
     .search-box {
       text-align: center;
       margin-bottom: 1rem;
     }
+
     .user-card {
       background: #e0e0e0;
       box-shadow: 5px 5px 10px #bebebe, -5px -5px 10px #ffffff;
@@ -51,33 +58,47 @@
       padding: 1rem;
       margin: 1rem 0;
     }
+
     .flex {
       display: flex;
       justify-content: center;
       gap: 10px;
       flex-wrap: wrap;
     }
+
     .top-form {
       text-align: center;
       margin-bottom: 20px;
     }
-    .leaderboard {
-      margin-top: 2rem;
+
+    .progress-bar {
+      width: 100%;
+      height: 12px;
+      background: #d3d3d3;
+      border-radius: 8px;
+      margin: 10px 0;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #4caf50;
+      border-radius: 8px;
+      transition: width 0.3s ease;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h2>🚗 Admin Panel</h2>
-
     <div class="top-form">
       <input type="text" id="newUserId" placeholder="User ID" />
       <input type="text" id="newUserName" placeholder="User Name" />
       <select id="newUserCar">
-        <option value="🚗">🚗</option>
-        <option value="🚙">🚙</option>
-        <option value="🛻">🛻</option>
-        <option value="🚚">🚚</option>
+        <option value="🚗">🚗 Sedan</option>
+        <option value="🚙">🚙 SUV</option>
+        <option value="🛻">🛻 Pickup</option>
+        <option value="🚚">🚚 Truck</option>
       </select>
       <button onclick="createUser()">Create User</button>
     </div>
@@ -87,12 +108,7 @@
     </div>
 
     <div id="usersList"></div>
-    <div class="leaderboard">
-      <h3>🏆 Top Cars</h3>
-      <div id="topCars"></div>
-    </div>
   </div>
-
   <script src="admin.js"></script>
 </body>
 </html>
