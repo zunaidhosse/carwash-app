@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Admin Panel</title>
   <style>
     body {
@@ -17,7 +17,7 @@
       margin-bottom: 2rem;
     }
 
-    input, button {
+    input, button, textarea {
       padding: 10px 15px;
       border: none;
       border-radius: 12px;
@@ -26,6 +26,13 @@
       margin: 5px;
       font-size: 16px;
       outline: none;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    textarea {
+      width: 100%;
+      resize: vertical;
+      min-height: 50px;
     }
 
     button {
@@ -64,22 +71,130 @@
       justify-content: center;
       gap: 10px;
       flex-wrap: wrap;
+      margin-top: 10px;
     }
 
     .top-form {
       text-align: center;
       margin-bottom: 20px;
     }
+
+    /* Progress bar */
+    .progress-container {
+      width: 100%;
+      background: #ccc;
+      border-radius: 10px;
+      height: 15px;
+      margin-top: 5px;
+      box-shadow: inset 3px 3px 5px #bebebe, inset -3px -3px 5px #ffffff;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: #2f80ed;
+      border-radius: 10px;
+      transition: width 0.3s ease;
+    }
+
+    /* Modal styles */
+    #historyModal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    #historyModal.active {
+      display: flex;
+    }
+
+    #historyModal .modal-content {
+      background: #e0e0e0;
+      padding: 20px;
+      border-radius: 15px;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 10px 10px 20px #bebebe, -10px -10px 20px #ffffff;
+      color: #333;
+    }
+
+    #historyModal h3 {
+      margin-top: 0;
+      text-align: center;
+    }
+
+    #historyModal ul {
+      list-style: none;
+      max-height: 200px;
+      overflow-y: auto;
+      padding-left: 0;
+    }
+
+    #historyModal ul li {
+      padding: 5px 0;
+      border-bottom: 1px solid #ccc;
+    }
+
+    #historyModal button.close-btn {
+      margin-top: 15px;
+      width: 100%;
+      background: #d9534f;
+      color: white;
+      font-weight: bold;
+    }
+
+    /* Leaderboard */
+    #leaderboard {
+      margin-top: 30px;
+      background: #e0e0e0;
+      border-radius: 16px;
+      padding: 1rem;
+      box-shadow: inset 3px 3px 6px #bebebe, inset -3px -3px 6px #ffffff;
+    }
+
+    #leaderboard h3 {
+      margin-top: 0;
+      text-align: center;
+    }
+
+    #leaderboard ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    #leaderboard ul li {
+      padding: 5px 0;
+      border-bottom: 1px solid #ccc;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    /* Language toggle button */
+    #toggleLangBtn {
+      margin: 0 auto 20px auto;
+      display: block;
+      font-size: 18px;
+      padding: 8px 20px;
+      background: #2f80ed;
+      color: white;
+      border-radius: 12px;
+      box-shadow: 5px 5px 10px #1a5ecc, -5px -5px 10px #5a9aff;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>🚗 Admin Panel</h2>
+    <h2>🚗 <span data-en="Admin Panel" data-ar="لوحة الإدارة">Admin Panel</span></h2>
+
+    <button id="toggleLangBtn">🌐 Arabic</button>
 
     <div class="top-form">
       <input type="text" id="newUserId" placeholder="User ID" />
       <input type="text" id="newUserName" placeholder="User Name" />
-      <button onclick="createUser()">Create User</button>
+      <button onclick="createUser()"><span data-en="Create User" data-ar="إنشاء مستخدم">Create User</span></button>
     </div>
 
     <div class="search-box">
@@ -87,9 +202,22 @@
     </div>
 
     <div id="usersList"></div>
+
+    <div id="leaderboard">
+      <h3><span data-en="Leaderboard (Top Users)" data-ar="قائمة المتصدرين (أفضل المستخدمين)">Leaderboard (Top Users)</span></h3>
+      <ul id="leaderboardList"></ul>
+    </div>
   </div>
 
-  <!-- Correct JS file -->
+  <!-- History Modal -->
+  <div id="historyModal">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="historyTitle">
+      <h3 id="historyTitle"><span data-en="Wash History" data-ar="سجل الغسيل">Wash History</span></h3>
+      <ul id="historyList"></ul>
+      <button class="close-btn" onclick="closeHistoryModal()"><span data-en="Close" data-ar="إغلاق">Close</span></button>
+    </div>
+  </div>
+
   <script src="admin.js"></script>
 </body>
 </html>
