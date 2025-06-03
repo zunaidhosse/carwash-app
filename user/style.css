@@ -1,0 +1,52 @@
+body {
+  font-family: sans-serif;
+  background: #ecf0f3;
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.container {
+  background: #ecf0f3;
+  box-shadow: 8px 8px 15px #cbced1, -8px -8px 15px #fff;
+  padding: 2rem;
+  border-radius: 20px;
+  width: 300px;
+  text-align: center;
+}
+input {
+  padding: 0.5rem;
+  width: 100%;
+  margin-bottom: 1rem;
+  border-radius: 10px;
+  border: none;
+  box-shadow: inset 3px 3px 6px #cbced1, inset -3px -3px 6px #fff;
+}
+button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 10px;
+  background: #2f80ed;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+.cars {
+  font-size: 2rem;
+  margin: 1rem 0;
+}
+.hidden {
+  display: none;
+}x;
+}
+
+.congrats {
+  font-weight: bold;
+  color: green;
+  font-size: 18px;
+}
+
+.message {
+  color: blue;
+}

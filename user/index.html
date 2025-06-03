@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User View</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h2>Enter Your User ID</h2>
+    <input type="text" id="userIdInput" placeholder="Your ID" />
+    <button onclick="loadUser()">View</button>
+    
+    <div id="userData" class="hidden">
+      <h3 id="userName"></h3>
+      <div id="carsContainer" class="cars"></div>
+      <p id="messageArea"></p>
+    </div>
+  </div>
+
+  <script>
+    function loadUser() {
+      const id = document.getElementById("userIdInput").value.trim();
+      const users = JSON.parse(localStorage.getItem("users") || "{}");
+      if (users[id]) {
+        const user = users[id];
+        document.getElementById("userData").classList.remove("hidden");
+        document.getElementById("userName").innerText = `Welcome, ${user.name}`;
+        const container = document.getElementById("carsContainer");
+        container.innerHTML = "";
+
+        for (let i = 1; i <= 5; i++) {
+          const car = document.createElement("span");
+          car.innerText = "🚗";
+          car.style.opacity = i <= user.count ? "1" : "0.3";
+          container.appendChild(car);
+        }
+
+        const message = document.getElementById("messageArea");
+        if (user.count === 5) {
+          message.innerText = "🎉 Congratulations! One Car Wash Free!";
+        } else {
+          message.innerText = "";
+        }
+      } else {
+        alert("User not found!");
+      }
+    }
+  </script>
+</body>
+</html>
