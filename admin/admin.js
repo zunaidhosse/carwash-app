@@ -1,16 +1,4 @@
-const password = "Zun64725800";
 let users = JSON.parse(localStorage.getItem("users") || "{}");
-
-function checkPassword() {
-  const input = document.getElementById("adminPass").value;
-  if (input === password) {
-    document.getElementById("login-section").classList.add("hidden");
-    document.getElementById("admin-section").classList.remove("hidden");
-    renderUsers();
-  } else {
-    alert("Incorrect password");
-  }
-}
 
 function saveUsers() {
   localStorage.setItem("users", JSON.stringify(users));
@@ -25,6 +13,8 @@ function createUser() {
     renderUsers();
     document.getElementById("newUserId").value = "";
     document.getElementById("newUserName").value = "";
+  } else {
+    alert("Invalid or duplicate user ID");
   }
 }
 
@@ -36,9 +26,11 @@ function incrementWash(id) {
 }
 
 function deleteUser(id) {
-  delete users[id];
-  saveUsers();
-  renderUsers();
+  if (confirm("Are you sure you want to delete this user?")) {
+    delete users[id];
+    saveUsers();
+    renderUsers();
+  }
 }
 
 function renderUsers() {
@@ -59,3 +51,6 @@ function renderUsers() {
     }
   }
 }
+
+// Render on page load
+renderUsers();
