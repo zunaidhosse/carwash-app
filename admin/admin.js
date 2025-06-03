@@ -5,16 +5,18 @@ function saveUsers() {
 }
 
 function createUser() {
-  const id = document.getElementById("newUserId").value.trim();
-  const name = document.getElementById("newUserName").value.trim();
+  const idField = document.getElementById("newUserId");
+  const nameField = document.getElementById("newUserName");
+  const id = idField.value.trim();
+  const name = nameField.value.trim();
 
   if (!id || !name) {
-    alert("Please enter both User ID and User Name.");
+    alert("Please enter both Car number and User Name.");
     return;
   }
 
   if (users[id]) {
-    alert("User ID already exists!");
+    alert("Car number already exists!");
     return;
   }
 
@@ -22,8 +24,12 @@ function createUser() {
   saveUsers();
   renderUsers();
 
-  document.getElementById("newUserId").value = "";
-  document.getElementById("newUserName").value = "";
+  // Clear fields
+  idField.value = "";
+  nameField.value = "";
+
+  // Hide Car number input after submission
+  idField.classList.add("hidden");
 }
 
 function incrementWash(id) {
@@ -52,7 +58,7 @@ function renderUsers() {
       const div = document.createElement("div");
       div.className = "user-card";
       div.innerHTML = `
-        <strong>${user.name}</strong> (ID: ${id})<br/>
+        <strong>${user.name}</strong> (Car: ${id})<br/>
         Wash Count: ${user.count}<br/>
         <div class="flex">
           <button onclick="incrementWash('${id}')">+1 Wash</button>
@@ -64,5 +70,8 @@ function renderUsers() {
   }
 }
 
-// Initial render
-renderUsers();
+// Show Car number field on refresh
+window.onload = () => {
+  document.getElementById("newUserId").classList.remove("hidden");
+  renderUsers();
+};
