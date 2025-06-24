@@ -1,3 +1,4 @@
+// admin.js
 import { app } from "./firebase.js";
 import {
   getDatabase,
@@ -22,7 +23,6 @@ function createUser() {
 
   const userRef = ref(db, "users/" + id);
 
-  // Check if user exists
   onValue(userRef, (snapshot) => {
     if (snapshot.exists()) {
       alert("User ID already exists!");
@@ -37,9 +37,7 @@ function createUser() {
       document.getElementById("newUserId").value = "";
       document.getElementById("newUserName").value = "";
     }
-  }, {
-    onlyOnce: true
-  });
+  }, { onlyOnce: true });
 }
 
 function incrementWash(id) {
@@ -50,15 +48,12 @@ function incrementWash(id) {
       const newCount = (data.count % 5) + 1;
       update(userRef, { count: newCount });
     }
-  }, {
-    onlyOnce: true
-  });
+  }, { onlyOnce: true });
 }
 
 function deleteUser(id) {
   if (confirm("Are you sure you want to delete this user?")) {
-    const userRef = ref(db, "users/" + id);
-    remove(userRef);
+    remove(ref(db, "users/" + id));
   }
 }
 
@@ -71,11 +66,7 @@ function renderUsers() {
   onValue(usersRef, (snapshot) => {
     const users = snapshot.val();
     if (users) {
-      // Order by createdAt descending
-      const sorted = Object.entries(users).sort(
-        (a, b) => b[1].createdAt - a[1].createdAt
-      );
-
+      const sorted = Object.entries(users).sort((a, b) => b[1].createdAt - a[1].createdAt);
       for (const [id, user] of sorted) {
         if (
           id.toLowerCase().includes(filter) ||
@@ -104,12 +95,9 @@ function renderUsers() {
   });
 }
 
-// Real-time rendering
 document.getElementById("searchBox").addEventListener("input", renderUsers);
-
-renderUsers();
-
-// Expose functions to window
 window.createUser = createUser;
 window.incrementWash = incrementWash;
 window.deleteUser = deleteUser;
+
+renderUsers();
