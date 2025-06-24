@@ -44,6 +44,10 @@
       cursor: pointer;
       margin-top: 1rem;
     }
+
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -67,54 +71,78 @@
     </div>
   </div>
 
-  <script>
-    function loadUser() {
+  <!-- ✅ Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+    // ✅ Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyBKXXxw_K4nZyczAm9DrU5pCkP7YmOETFc",
+      authDomain: "tast-2f7bf.firebaseapp.com",
+      databaseURL: "https://tast-2f7bf-default-rtdb.firebaseio.com",
+      projectId: "tast-2f7bf",
+      storageBucket: "tast-2f7bf.firebasestorage.app",
+      messagingSenderId: "848111042845",
+      appId: "1:848111042845:web:7a65cdd7360974faefe1f4",
+      measurementId: "G-BBQ6L0CK5L"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // ✅ Load user data from Firebase
+    window.loadUser = async function () {
       const id = document.getElementById("userIdInput").value.trim();
-      const users = JSON.parse(localStorage.getItem("users") || "{}");
+      if (!id) return alert("Please enter your car number.");
 
-      if (users[id]) {
-        const user = users[id];
+      const userRef = ref(db);
+      try {
+        const snapshot = await get(child(userRef, `users/${id}`));
+        if (snapshot.exists()) {
+          const user = snapshot.val();
 
-        document.getElementById("inputSection").style.display = "none";
-        document.getElementById("userData").classList.remove("hidden");
+          document.getElementById("inputSection").style.display = "none";
+          document.getElementById("userData").classList.remove("hidden");
 
-        document.getElementById("userName").innerText = `Welcome, ${user.name}`;
+          document.getElementById("userName").innerText = `Welcome, ${user.name}`;
 
-        const carEmoji = user.car || "🚗";
-        const carCount = user.count || 0;
+          const carEmoji = user.car || "🚗";
+          const carCount = user.count || 0;
 
-        // Display car emojis equal to count
-        const emojiArea = document.getElementById("carEmojiHeader");
-        emojiArea.innerHTML = "";
-        for (let i = 0; i < carCount; i++) {
-          emojiArea.innerHTML += carEmoji + " ";
-        }
-        if (carCount === 0) emojiArea.innerHTML = carEmoji;
+          // Car emojis
+          const emojiArea = document.getElementById("carEmojiHeader");
+          emojiArea.innerHTML = "";
+          for (let i = 0; i < carCount; i++) {
+            emojiArea.innerHTML += carEmoji + " ";
+          }
+          if (carCount === 0) emojiArea.innerHTML = carEmoji;
 
-        // Progress bar
-        const percentage = Math.min((carCount / 5) * 100, 100);
-        const progressBar = document.getElementById("progressBar");
-        progressBar.style.width = `${percentage}%`;
-        progressBar.innerText = `${Math.round(percentage)}%`;
+          // Progress bar
+          const percentage = Math.min((carCount / 5) * 100, 100);
+          const progressBar = document.getElementById("progressBar");
+          progressBar.style.width = `${percentage}%`;
+          progressBar.innerText = `${Math.round(percentage)}%`;
 
-        const message = document.getElementById("messageArea");
-        if (carCount === 5) {
-          message.innerText = "🎉 Congratulations! One Car Wash Free!";
+          // Message
+          const message = document.getElementById("messageArea");
+          message.innerText = carCount === 5 ? "🎉 Congratulations! One Car Wash Free!" : "";
         } else {
-          message.innerText = "";
+          alert("User not found!");
         }
-
-      } else {
-        alert("User not found!");
+      } catch (error) {
+        console.error(error);
+        alert("Error fetching user data.");
       }
-    }
+    };
 
-    function resetView() {
+    // ✅ Reset View
+    window.resetView = function () {
       document.getElementById("userIdInput").value = "";
       document.getElementById("inputSection").style.display = "block";
       document.getElementById("userData").classList.add("hidden");
       document.getElementById("carEmojiHeader").innerHTML = "🚗";
-    }
+    };
   </script>
 </body>
 </html>
