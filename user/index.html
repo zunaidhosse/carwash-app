@@ -1,3 +1,4 @@
+<!-- user.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,78 +6,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>User View</title>
   <link rel="stylesheet" href="style.css" />
-  <style>
-    .emoji-header {
-      font-size: 3.5rem;
-      text-align: center;
-      margin-bottom: 1rem;
-      line-height: 1.5;
-    }
-
-    .progress-bar-container {
-      background-color: #ccc;
-      border-radius: 20px;
-      height: 25px;
-      width: 100%;
-      margin: 1rem 0;
-      overflow: hidden;
-    }
-
-    .progress-bar-fill {
-      background-color: #2f80ed;
-      height: 100%;
-      width: 0%;
-      transition: width 0.5s ease;
-      text-align: center;
-      color: white;
-      font-weight: bold;
-      line-height: 25px;
-      border-radius: 20px;
-    }
-
-    .reset-btn {
-      padding: 0.5rem 1rem;
-      border: none;
-      border-radius: 10px;
-      background: #e74c3c;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 1rem;
-    }
-
-    .hidden {
-      display: none;
-    }
-  </style>
 </head>
 <body>
   <div class="container">
-    <div id="carEmojiHeader" class="emoji-header">🚗</div>
-
+    <div id="carEmojiHeader" class="cars">🚗</div>
     <h2>Enter Your Car Number</h2>
-    
     <div id="inputSection">
       <input type="text" id="userIdInput" placeholder="Enter Your Car Number" />
       <button onclick="loadUser()">View</button>
     </div>
-
     <div id="userData" class="hidden">
       <h3 id="userName"></h3>
-      <div class="progress-bar-container">
-        <div id="progressBar" class="progress-bar-fill">0%</div>
+      <div class="progress-container">
+        <div id="progressBar" class="progress-bar">0%</div>
       </div>
-      <p id="messageArea"></p>
+      <p id="messageArea" class="user-msg"></p>
       <button class="reset-btn" onclick="resetView()">🔄 Reset View</button>
     </div>
   </div>
 
-  <!-- ✅ Firebase SDK -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-    // ✅ Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyBKXXxw_K4nZyczAm9DrU5pCkP7YmOETFc",
       authDomain: "tast-2f7bf.firebaseapp.com",
@@ -91,52 +43,36 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // ✅ Load user data from Firebase
     window.loadUser = async function () {
       const id = document.getElementById("userIdInput").value.trim();
-      if (!id) return alert("Please enter your car number.");
-
       const userRef = ref(db);
-      try {
-        const snapshot = await get(child(userRef, `users/${id}`));
-        if (snapshot.exists()) {
-          const user = snapshot.val();
+      const snapshot = await get(child(userRef, `users/${id}`));
+      if (snapshot.exists()) {
+        const user = snapshot.val();
 
-          document.getElementById("inputSection").style.display = "none";
-          document.getElementById("userData").classList.remove("hidden");
+        document.getElementById("inputSection").style.display = "none";
+        document.getElementById("userData").classList.remove("hidden");
+        document.getElementById("userName").innerText = `Welcome, ${user.name}`;
 
-          document.getElementById("userName").innerText = `Welcome, ${user.name}`;
+        const carEmoji = user.car || "🚗";
+        const count = user.count || 0;
 
-          const carEmoji = user.car || "🚗";
-          const carCount = user.count || 0;
+        let emojiText = "";
+        for (let i = 0; i < count; i++) emojiText += carEmoji + " ";
+        document.getElementById("carEmojiHeader").innerHTML = emojiText || carEmoji;
 
-          // Car emojis
-          const emojiArea = document.getElementById("carEmojiHeader");
-          emojiArea.innerHTML = "";
-          for (let i = 0; i < carCount; i++) {
-            emojiArea.innerHTML += carEmoji + " ";
-          }
-          if (carCount === 0) emojiArea.innerHTML = carEmoji;
+        const percentage = Math.min((count / 5) * 100, 100);
+        const bar = document.getElementById("progressBar");
+        bar.style.width = `${percentage}%`;
+        bar.innerText = `${Math.round(percentage)}%`;
 
-          // Progress bar
-          const percentage = Math.min((carCount / 5) * 100, 100);
-          const progressBar = document.getElementById("progressBar");
-          progressBar.style.width = `${percentage}%`;
-          progressBar.innerText = `${Math.round(percentage)}%`;
-
-          // Message
-          const message = document.getElementById("messageArea");
-          message.innerText = carCount === 5 ? "🎉 Congratulations! One Car Wash Free!" : "";
-        } else {
-          alert("User not found!");
-        }
-      } catch (error) {
-        console.error(error);
-        alert("Error fetching user data.");
+        document.getElementById("messageArea").innerText =
+          count === 5 ? "🎉 Congratulations! One Car Wash Free!" : "";
+      } else {
+        alert("User not found!");
       }
     };
 
-    // ✅ Reset View
     window.resetView = function () {
       document.getElementById("userIdInput").value = "";
       document.getElementById("inputSection").style.display = "block";
