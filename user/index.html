@@ -1,4 +1,3 @@
-<!-- user.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,29 +5,71 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>User View</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Added some specific styles from the user's request */
+    .emoji-header {
+      font-size: 3.5rem;
+      text-align: center;
+      margin-bottom: 1rem;
+      line-height: 1.5;
+    }
+    .progress-bar-container {
+      background-color: #ccc;
+      border-radius: 20px;
+      height: 25px;
+      width: 100%;
+      margin: 1rem 0;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      background-color: #2f80ed;
+      height: 100%;
+      width: 0%;
+      transition: width 0.5s ease;
+      text-align: center;
+      color: white;
+      font-weight: bold;
+      line-height: 25px;
+      border-radius: 20px;
+    }
+    .reset-btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 10px;
+      background: #e74c3c;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
-    <div id="carEmojiHeader" class="cars">🚗</div>
+    <div id="carEmojiHeader" class="emoji-header">🚗</div>
     <h2>Enter Your Car Number</h2>
+    
     <div id="inputSection">
       <input type="text" id="userIdInput" placeholder="Enter Your Car Number" />
       <button onclick="loadUser()">View</button>
     </div>
+
     <div id="userData" class="hidden">
       <h3 id="userName"></h3>
-      <div class="progress-container">
-        <div id="progressBar" class="progress-bar">0%</div>
+      <div class="progress-bar-container">
+        <div id="progressBar" class="progress-bar-fill">0%</div>
       </div>
-      <p id="messageArea" class="user-msg"></p>
+      <p id="messageArea"></p>
       <button class="reset-btn" onclick="resetView()">🔄 Reset View</button>
     </div>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js"></script>
 
+  <script>
+    // Firebase configuration (copied from firebase.js for simplicity in a single file)
     const firebaseConfig = {
       apiKey: "AIzaSyBKXXxw_K4nZyczAm9DrU5pCkP7YmOETFc",
       authDomain: "tast-2f7bf.firebaseapp.com",
@@ -40,45 +81,67 @@
       measurementId: "G-BBQ6L0CK5L"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-    window.loadUser = async function () {
+    async function loadUser() {
       const id = document.getElementById("userIdInput").value.trim();
-      const userRef = ref(db);
-      const snapshot = await get(child(userRef, `users/${id}`));
-      if (snapshot.exists()) {
-        const user = snapshot.val();
-
-        document.getElementById("inputSection").style.display = "none";
-        document.getElementById("userData").classList.remove("hidden");
-        document.getElementById("userName").innerText = `Welcome, ${user.name}`;
-
-        const carEmoji = user.car || "🚗";
-        const count = user.count || 0;
-
-        let emojiText = "";
-        for (let i = 0; i < count; i++) emojiText += carEmoji + " ";
-        document.getElementById("carEmojiHeader").innerHTML = emojiText || carEmoji;
-
-        const percentage = Math.min((count / 5) * 100, 100);
-        const bar = document.getElementById("progressBar");
-        bar.style.width = `${percentage}%`;
-        bar.innerText = `${Math.round(percentage)}%`;
-
-        document.getElementById("messageArea").innerText =
-          count === 5 ? "🎉 Congratulations! One Car Wash Free!" : "";
-      } else {
-        alert("User not found!");
+      if (!id) {
+          alert("Please enter your car number.");
+          return;
       }
-    };
+      
+      try {
+        const snapshot = await db.ref('users/' + id).get();
 
-    window.resetView = function () {
+        if (snapshot.exists()) {
+          const user = snapshot.val();
+
+          document.getElementById("inputSection").style.display = "none";
+          document.getElementById("userData").classList.remove("hidden");
+
+          document.getElementById("userName").innerText = `Welcome, ${user.name}`;
+
+          const carEmoji = user.car || "🚗";
+          const carCount = user.count || 0;
+
+          // Display car emojis equal to count
+          const emojiArea = document.getElementById("carEmojiHeader");
+          emojiArea.innerHTML = "";
+          for (let i = 0; i < carCount; i++) {
+            emojiArea.innerHTML += carEmoji + " ";
+          }
+          if (carCount === 0) emojiArea.innerHTML = carEmoji;
+
+          // Progress bar
+          const percentage = Math.min((carCount / 5) * 100, 100);
+          const progressBar = document.getElementById("progressBar");
+          progressBar.style.width = `${percentage}%`;
+          progressBar.innerText = `${Math.round(percentage)}%`;
+
+          const message = document.getElementById("messageArea");
+          if (carCount === 5) {
+            message.innerText = "🎉 Congratulations! One Car Wash Free!";
+          } else {
+            message.innerText = `You need ${5 - carCount} more washes for a free one.`;
+          }
+
+        } else {
+          alert("User not found!");
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        alert("Could not fetch data. Please try again.");
+      }
+    }
+
+    function resetView() {
       document.getElementById("userIdInput").value = "";
       document.getElementById("inputSection").style.display = "block";
       document.getElementById("userData").classList.add("hidden");
       document.getElementById("carEmojiHeader").innerHTML = "🚗";
-    };
+    }
   </script>
 </body>
 </html>
