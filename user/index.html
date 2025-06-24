@@ -1,3 +1,4 @@
+<!-- user/user.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,42 +7,11 @@
   <title>User View</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    /* Added some specific styles from the user's request */
-    .emoji-header {
-      font-size: 3.5rem;
-      text-align: center;
-      margin-bottom: 1rem;
-      line-height: 1.5;
-    }
-    .progress-bar-container {
-      background-color: #ccc;
-      border-radius: 20px;
-      height: 25px;
-      width: 100%;
-      margin: 1rem 0;
-      overflow: hidden;
-    }
-    .progress-bar-fill {
-      background-color: #2f80ed;
-      height: 100%;
-      width: 0%;
-      transition: width 0.5s ease;
-      text-align: center;
-      color: white;
-      font-weight: bold;
-      line-height: 25px;
-      border-radius: 20px;
-    }
-    .reset-btn {
-      padding: 0.5rem 1rem;
-      border: none;
-      border-radius: 10px;
-      background: #e74c3c;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 1rem;
-    }
+    /* ... আপনার আগের স্টাইলগুলো এখানে থাকবে ... */
+    .emoji-header { font-size: 3.5rem; text-align: center; margin-bottom: 1rem; line-height: 1.5; }
+    .progress-bar-container { background-color: #ccc; border-radius: 20px; height: 25px; width: 100%; margin: 1rem 0; overflow: hidden; }
+    .progress-bar-fill { background-color: #2f80ed; height: 100%; width: 0%; transition: width 0.5s ease; text-align: center; color: white; font-weight: bold; line-height: 25px; border-radius: 20px; }
+    .reset-btn { padding: 0.5rem 1rem; border: none; border-radius: 10px; background: #e74c3c; color: white; font-weight: bold; cursor: pointer; margin-top: 1rem; }
   </style>
 </head>
 <body>
@@ -64,12 +34,13 @@
     </div>
   </div>
 
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js"></script>
+  <!-- Firebase মডিউল লোড করা হচ্ছে -->
+  <script type="module">
+    // firebase.js থেকে প্রয়োজনীয় ফাংশন ইম্পোর্ট করা হচ্ছে
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
 
-  <script>
-    // Firebase configuration (copied from firebase.js for simplicity in a single file)
+    // Firebase কনফিগারেশন এখানেও দেওয়া হলো
     const firebaseConfig = {
       apiKey: "AIzaSyBKXXxw_K4nZyczAm9DrU5pCkP7YmOETFc",
       authDomain: "tast-2f7bf.firebaseapp.com",
@@ -81,9 +52,9 @@
       measurementId: "G-BBQ6L0CK5L"
     };
 
-    // Initialize Firebase
-    const app = firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+    // Firebase ইনিশিয়ালাইজ করুন
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
     async function loadUser() {
       const id = document.getElementById("userIdInput").value.trim();
@@ -93,35 +64,29 @@
       }
       
       try {
-        const snapshot = await db.ref('users/' + id).get();
+        const userRef = ref(db, 'users/' + id); // সঠিক রেফারেন্স তৈরি
+        const snapshot = await get(userRef); // ডেটা আনা
 
         if (snapshot.exists()) {
           const user = snapshot.val();
 
+          // UI আপডেট করা
           document.getElementById("inputSection").style.display = "none";
           document.getElementById("userData").classList.remove("hidden");
-
           document.getElementById("userName").innerText = `Welcome, ${user.name}`;
 
           const carEmoji = user.car || "🚗";
           const carCount = user.count || 0;
-
-          // Display car emojis equal to count
           const emojiArea = document.getElementById("carEmojiHeader");
-          emojiArea.innerHTML = "";
-          for (let i = 0; i < carCount; i++) {
-            emojiArea.innerHTML += carEmoji + " ";
-          }
-          if (carCount === 0) emojiArea.innerHTML = carEmoji;
+          emojiArea.innerHTML = carCount > 0 ? (carEmoji + " ").repeat(carCount) : carEmoji;
 
-          // Progress bar
           const percentage = Math.min((carCount / 5) * 100, 100);
           const progressBar = document.getElementById("progressBar");
           progressBar.style.width = `${percentage}%`;
           progressBar.innerText = `${Math.round(percentage)}%`;
 
           const message = document.getElementById("messageArea");
-          if (carCount === 5) {
+          if (carCount >= 5) {
             message.innerText = "🎉 Congratulations! One Car Wash Free!";
           } else {
             message.innerText = `You need ${5 - carCount} more washes for a free one.`;
@@ -131,6 +96,7 @@
           alert("User not found!");
         }
       } catch (error) {
+        // এরর হলে কনসোলে দেখানো হবে
         console.error("Error fetching user data:", error);
         alert("Could not fetch data. Please try again.");
       }
@@ -142,6 +108,10 @@
       document.getElementById("userData").classList.add("hidden");
       document.getElementById("carEmojiHeader").innerHTML = "🚗";
     }
+
+    // ফাংশনগুলোকে গ্লোবালি অ্যাক্সেসযোগ্য করা
+    window.loadUser = loadUser;
+    window.resetView = resetView;
   </script>
 </body>
 </html>
