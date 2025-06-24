@@ -1,10 +1,14 @@
-let users = JSON.parse(localStorage.getItem("users") || "{}");
-let creationOrder = JSON.parse(localStorage.getItem("creationOrder") || "[]");
+import { app } from "./firebase.js";
+import {
+  getDatabase,
+  ref,
+  set,
+  update,
+  remove,
+  onValue
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-function saveUsers() {
-  localStorage.setItem("users", JSON.stringify(users));
-  localStorage.setItem("creationOrder", JSON.stringify(creationOrder));
-}
+const db = getDatabase(app);
 
 function createUser() {
   const id = document.getElementById("newUserId").value.trim();
@@ -16,32 +20,45 @@ function createUser() {
     return;
   }
 
-  if (users[id]) {
-    alert("User ID already exists!");
-    return;
-  }
+  const userRef = ref(db, "users/" + id);
 
-  users[id] = { name, count: 0, car: car };
-  creationOrder.unshift(id); // Add to top (latest first)
-  saveUsers();
-  renderUsers();
+  // Check if user exists
+  onValue(userRef, (snapshot) => {
+    if (snapshot.exists()) {
+      alert("User ID already exists!");
+    } else {
+      set(userRef, {
+        name,
+        count: 0,
+        car,
+        createdAt: Date.now()
+      });
 
-  document.getElementById("newUserId").value = "";
-  document.getElementById("newUserName").value = "";
+      document.getElementById("newUserId").value = "";
+      document.getElementById("newUserName").value = "";
+    }
+  }, {
+    onlyOnce: true
+  });
 }
 
 function incrementWash(id) {
-  users[id].count = (users[id].count % 5) + 1; // Reset after 5
-  saveUsers();
-  renderUsers();
+  const userRef = ref(db, "users/" + id);
+  onValue(userRef, (snapshot) => {
+    if (snapshot.exists()) {
+      const data = snapshot.val();
+      const newCount = (data.count % 5) + 1;
+      update(userRef, { count: newCount });
+    }
+  }, {
+    onlyOnce: true
+  });
 }
 
 function deleteUser(id) {
   if (confirm("Are you sure you want to delete this user?")) {
-    delete users[id];
-    creationOrder = creationOrder.filter(uid => uid !== id);
-    saveUsers();
-    renderUsers();
+    const userRef = ref(db, "users/" + id);
+    remove(userRef);
   }
 }
 
@@ -50,29 +67,49 @@ function renderUsers() {
   const filter = document.getElementById("searchBox").value.toLowerCase();
   list.innerHTML = "";
 
-  for (const id of creationOrder) {
-    if (!users[id]) continue;
-    if (id.toLowerCase().includes(filter) || users[id].name.toLowerCase().includes(filter)) {
-      const user = users[id];
-      const div = document.createElement("div");
-      div.className = "user-card";
+  const usersRef = ref(db, "users/");
+  onValue(usersRef, (snapshot) => {
+    const users = snapshot.val();
+    if (users) {
+      // Order by createdAt descending
+      const sorted = Object.entries(users).sort(
+        (a, b) => b[1].createdAt - a[1].createdAt
+      );
 
-      const progress = (user.count / 5) * 100;
+      for (const [id, user] of sorted) {
+        if (
+          id.toLowerCase().includes(filter) ||
+          user.name.toLowerCase().includes(filter)
+        ) {
+          const div = document.createElement("div");
+          div.className = "user-card";
 
-      div.innerHTML = `
-        <strong>${user.name}</strong> (ID: ${id})<br/>
-        Car: ${user.car || "🚗"}<br/>
-        Wash Count: ${user.count}
-        <div class="progress-bar"><div class="progress-fill" style="width: ${progress}%"></div></div>
-        <div class="flex">
-          <button onclick="incrementWash('${id}')">+1 Wash</button>
-          <button onclick="deleteUser('${id}')">Delete</button>
-        </div>
-      `;
+          const progress = (user.count / 5) * 100;
 
-      list.appendChild(div);
+          div.innerHTML = `
+            <strong>${user.name}</strong> (ID: ${id})<br/>
+            Car: ${user.car || "🚗"}<br/>
+            Wash Count: ${user.count}
+            <div class="progress-bar"><div class="progress-fill" style="width: ${progress}%"></div></div>
+            <div class="flex">
+              <button onclick="incrementWash('${id}')">+1 Wash</button>
+              <button onclick="deleteUser('${id}')">Delete</button>
+            </div>
+          `;
+
+          list.appendChild(div);
+        }
+      }
     }
-  }
+  });
 }
 
+// Real-time rendering
+document.getElementById("searchBox").addEventListener("input", renderUsers);
+
 renderUsers();
+
+// Expose functions to window
+window.createUser = createUser;
+window.incrementWash = incrementWash;
+window.deleteUser = deleteUser;
