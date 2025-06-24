@@ -22,6 +22,7 @@ body {
 input {
   padding: 0.5rem;
   width: 100%;
+  box-sizing: border-box; /* Added for better sizing */
   margin-bottom: 1rem;
   border-radius: 10px;
   border: none;
@@ -62,20 +63,4 @@ button {
 
 .hidden {
   display: none;
-}
-
-.user-msg {
-  font-style: italic;
-  margin-top: 10px;
-  color: #333;
-}
-
-.reset-btn {
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 10px;
-  background: #e74c3c;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
 }
